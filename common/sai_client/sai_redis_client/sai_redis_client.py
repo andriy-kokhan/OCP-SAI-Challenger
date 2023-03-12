@@ -680,12 +680,26 @@ class SaiRedisClient(SaiClient):
         return rid
 
     def __assert_syncd_running(self, tout=30):
-        for i in range(tout):
+        start_time = time.time()
+
+        # Make sure Redis is running
+        while True:
+            try:
+                self.r.ping()
+                break
+            except:
+                if time.time() - start_time >= tout:
+                    assert False, f"Redis is still not available after {tout} seconds..."
             time.sleep(1)
+
+        # Make sure SyncD is running
+        while True:
             numsub = self.r.execute_command('PUBSUB', 'NUMSUB', 'ASIC_STATE_CHANNEL@1')
             if numsub[1] >= 1:
                 return
-        assert False, "SyncD has not started yet..."
+            if time.time() - start_time >= tout:
+                assert False, f"SyncD has not started within {tout} seconds..."
+            time.sleep(1)
 
     def __update_oid_key(self, action, key):
         key_list = key.split(":", 1)
