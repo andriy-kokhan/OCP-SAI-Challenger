@@ -34,6 +34,14 @@ class SaiZmqClient(SaiRedisClient):
         # Redis shutdown restarts syncd; the old REQ socket is no longer valid.
         self._open_req_socket()
 
+    def close(self):
+        """Release the ZMQ context. A live context keeps its I/O and reaper
+        threads running and blocks the interpreter from exiting."""
+        self._close_req_socket()
+        if self._zmq_ctx is not None:
+            self._zmq_ctx.destroy(linger=0)
+            self._zmq_ctx = None
+
     def operate(self, obj, attrs, op):
         if self.asic_channel is None:
             self.__assert_syncd_running()
@@ -77,6 +85,8 @@ class SaiZmqClient(SaiRedisClient):
 
     def _open_req_socket(self):
         self._close_req_socket()
+        if self._zmq_ctx is None:
+            self._zmq_ctx = self._zmq.Context()
         self._req = self._zmq_ctx.socket(self._zmq.REQ)
         self._req.setsockopt(self._zmq.LINGER, 0)
         self._req.connect(self.zmq_endpoint)

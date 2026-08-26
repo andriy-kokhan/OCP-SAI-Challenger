@@ -9,7 +9,9 @@ ENV SC_TARGET=saivs
 
 WORKDIR /sai
 
-RUN git clone https://github.com/sonic-net/sonic-sairedis.git \
+# sc-base installs SAI-C syncd_start.sh; syncd-vs overwrites it with sonic-cfggen.
+RUN cp /usr/bin/syncd_start.sh /tmp/sc-syncd_start.sh \
+        && git clone https://github.com/sonic-net/sonic-sairedis.git \
         && cd sonic-sairedis \
         && . /sai.env \
         && git checkout ${SAIREDIS_ID} \
@@ -49,6 +51,7 @@ RUN git clone https://github.com/sonic-net/sonic-sairedis.git \
         && dpkg -i libsaivs_1.0.0_amd64.deb \
         && dpkg -i libsaivs-dev_1.0.0_amd64.deb \
         && dpkg -i syncd-vs_1.0.0_amd64.deb \
+        && cp /tmp/sc-syncd_start.sh /usr/bin/syncd_start.sh \
         && mv sonic-sairedis/tests . \
         && rm -f *.deb \
         && rm -rf sonic-sairedis/* \
