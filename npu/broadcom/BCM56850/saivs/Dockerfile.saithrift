@@ -38,9 +38,7 @@ RUN wget -O doxygen-1.9.4.linux.bin.tar.gz "https://sourceforge.net/projects/dox
     && cp doxygen-1.9.4/bin/doxygen /usr/local/bin/doxygen \
     && rm -rf doxygen-1.9.4*
 
-# sc-base installs SAI-C syncd_start.sh; syncd-vs overwrites it with sonic-cfggen.
-RUN cp /usr/bin/syncd_start.sh /tmp/sc-syncd_start.sh \
-        && git clone https://github.com/sonic-net/sonic-sairedis.git \
+RUN git clone https://github.com/sonic-net/sonic-sairedis.git \
         && cd sonic-sairedis \
         && . /sai.env \
         && git checkout ${SAIREDIS_ID} \
@@ -63,7 +61,6 @@ RUN cp /usr/bin/syncd_start.sh /tmp/sc-syncd_start.sh \
         && dpkg -i libsaivs_1.0.0_amd64.deb \
         && dpkg -i libsaivs-dev_1.0.0_amd64.deb \
         && dpkg -i syncd-vs_1.0.0_amd64.deb \
-        && cp /tmp/sc-syncd_start.sh /usr/bin/syncd_start.sh \
         && rm -f *.deb \
         && cd sonic-sairedis/SAI \
         && sed -i '/^use strict;/a use feature "switch";\nno warnings "experimental::smartmatch";\nno warnings "deprecated";' meta/gensairpc.pl \

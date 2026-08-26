@@ -12,7 +12,7 @@ class SaiClient:
     def cleanup(self):
         raise NotImplementedError
 
-    def close(self):
+    def deinit(self):
         """Release transport resources held by the client on session end."""
         pass
 
