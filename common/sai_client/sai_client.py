@@ -12,6 +12,10 @@ class SaiClient:
     def cleanup(self):
         raise NotImplementedError
 
+    def deinit(self):
+        """Release transport resources held by the client on session end."""
+        pass
+
     def set_loglevel(self, sai_api, loglevel):
         raise NotImplementedError
 

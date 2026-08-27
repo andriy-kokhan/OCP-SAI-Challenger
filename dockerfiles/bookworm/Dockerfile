@@ -134,7 +134,7 @@ WORKDIR /sai-challenger/tests
 # Setup supervisord
 COPY scripts/veth-create.sh    /usr/bin/veth-create.sh
 COPY scripts/redis_start.sh    /usr/bin/redis_start.sh
-COPY scripts/syncd_start.sh    /usr/bin/syncd_start.sh
+COPY scripts/syncd_start.sh    /usr/bin/syncd_custom_start.sh
 COPY configs/context_config.json /etc/sai.d/context_config.json
 COPY configs/supervisord.conf  /etc/supervisor/conf.d/supervisord.conf
 
